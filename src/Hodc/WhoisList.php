@@ -10,7 +10,7 @@ class WhoisList
 
     public function __construct($sourceFile = null)
     {
-        if (!$sourceFile) {
+        if ($sourceFile) {
             $this->whoisSourceFile = $sourceFile;
         }
         $this->loadDb();
@@ -19,7 +19,7 @@ class WhoisList
     private function loadDb()
     {
         if (file_exists($this->whoisSourceFile)) {
-            $result = file_get_contents($this->whoisSourceFile, true);
+            $result = json_decode(file_get_contents($this->whoisSourceFile), true);
             $this->whoisList = $result;
         }
     }
