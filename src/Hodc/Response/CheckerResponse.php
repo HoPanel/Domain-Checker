@@ -64,4 +64,22 @@ class CheckerResponse
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getDomains()
+    {
+        return $this->domains;
+    }
+
+    /**
+     * @param array $domains
+     */
+    public function setDomains($domains)
+    {
+        $this->domains = $domains;
+    }
+
+
 }

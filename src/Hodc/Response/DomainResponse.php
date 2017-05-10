@@ -57,8 +57,6 @@ class DomainResponse
         unset($last);
         $val = $first;
         if (!empty($val) && $date = date_create_from_format("Y-m-d\TH:i:s", $val)) {
-            echo 'selami0';
-
             return $date;
         }
 

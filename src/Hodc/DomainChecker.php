@@ -43,17 +43,21 @@ class DomainChecker
         $parsed = $this->parseDomain($domainName);
 
         if (!$parsed) {
-            return $this->response->setStatus(false)
+            $this->response->setStatus(false)
                 ->setErrorMessage('Domain Parse Error')
                 ->setErrorCode('NF01');
+
+            return $this->response;
         }
 
         $provider = $this->whoisList->getProvider($parsed['tld']);
 
         if (!$provider) {
-            return $this->response->setStatus(false)
+            $this->response->setStatus(false)
                 ->setErrorMessage('Tld not found')
                 ->setErrorCode('NF02');
+
+            return $this->response;
         }
 
         $this->response->addDomainResonse($this->getDomainWhois($parsed['host'], $provider));
