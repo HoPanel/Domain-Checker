@@ -66,7 +66,7 @@ class CheckerResponse
     }
 
     /**
-     * @return array
+     * @return array|DomainResponse[]
      */
     public function getDomains()
     {
