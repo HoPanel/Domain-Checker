@@ -141,5 +141,12 @@ class DomainResponse
         $this->whoisRawText = $whoisRawText;
     }
 
-
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+    
 }
