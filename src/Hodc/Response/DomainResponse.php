@@ -11,7 +11,8 @@ class DomainResponse
     protected $registryExpiryDate;
     protected $updatedDate;
     protected $creationDate;
-    protected $nameServer;
+
+    protected $whoisRawText = null;
 
     public function isStatus()
     {
@@ -30,12 +31,16 @@ class DomainResponse
      */
     public function fill($data)
     {
+
         $this->data = $data;
+
 
         $this->setDomainName($this->ifSet('DOMAIN_NAME'));
         $this->setNameServer($this->ifSet('NAME_SERVER'));
 
+
         if ($this->getDomainName()) {
+
             $this->setUpdatedDate($this->getDateTime($this->ifSet('UPDATED_DATE')));
             $this->setCreationDate($this->getDateTime($this->ifSet('CREATION_DATE')));
             $this->setRegistryExpiryDate($this->getDateTime($this->ifSet('REGISTRY_EXPIRY_DATE')));
@@ -53,10 +58,7 @@ class DomainResponse
             return false;
         }
 
-        list($first, $last) = explode('.', $val);
-        unset($last);
-        $val = $first;
-        if (!empty($val) && $date = date_create_from_format("Y-m-d\TH:i:s", $val)) {
+        if (!empty($val) && $date = date_create_from_format("Y-m-d\TH:i:s\Z", $val)) {
             return $date;
         }
 
@@ -122,4 +124,22 @@ class DomainResponse
 
         return $this;
     }
+
+    /**
+     * @return null
+     */
+    public function getWhoisRawText()
+    {
+        return $this->whoisRawText;
+    }
+
+    /**
+     * @param null $whoisRawText
+     */
+    public function setWhoisRawText($whoisRawText)
+    {
+        $this->whoisRawText = $whoisRawText;
+    }
+
+
 }

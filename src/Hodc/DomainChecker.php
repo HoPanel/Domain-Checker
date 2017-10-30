@@ -21,7 +21,7 @@ class DomainChecker
     {
         $this->whoisList = new WhoisList();
         $this->parser = new Parser();
-        $this->response = new CheckerResponse();
+        $this->response = new DomainResponse();
     }
 
     public function addWhoisProvider($providerName, $whoisUrl)
@@ -46,7 +46,6 @@ class DomainChecker
             $this->response->setStatus(false)
                 ->setErrorMessage('Domain Parse Error')
                 ->setErrorCode('NF01');
-
             return $this->response;
         }
 
@@ -60,9 +59,7 @@ class DomainChecker
             return $this->response;
         }
 
-        $this->response->addDomainResonse($this->getDomainWhois($parsed['host'], $provider));
-
-        return $this->response;
+        return $this->getDomainWhois($parsed['host'], $provider);
     }
 
     private function getDomainWhois($domainHost, $whoisUrl)
@@ -80,14 +77,18 @@ class DomainChecker
             fclose($serverConn);
         }
 
-        $this->response->setWhoisRawText($response);
+        $domainResult->setWhoisRawText($response);
         $domainResult->fill($this->parseWhoisText($response));
+        $domainResult->setStatus(true);
 
         return $domainResult;
     }
 
     private function parseDomain($domainName)
     {
+        if (strpos($domainName, 'http') === false) {
+            $domainName = 'http://' . $domainName;
+        }
         $result = $this->parser->parseUrl($domainName);
         if (!$result->getIsDomain()) {
             return [];
@@ -109,7 +110,11 @@ class DomainChecker
         foreach ($rows as $row) {
             $posOfFirstColon = strpos($row, ':');
             $key = str_replace(' ', '_', strtoupper(substr($row, 0, $posOfFirstColon)));
-            $arrs[$key] = trim(substr($row, $posOfFirstColon + 1));
+            $key = str_replace('___', '', $key);
+
+            if ($key) {
+                $arrs[$key] = trim(substr($row, $posOfFirstColon + 1));
+            }
         }
 
         return $arrs;
